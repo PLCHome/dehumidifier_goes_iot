@@ -60,7 +60,7 @@ After inserting the board into the device, the ESP32 rebooted every time I turne
 
 ![board inside](pic/board_inside.jpeg)
 
-And then the YAML for ESP Home, and here it is in Home Assistant. You can select one of the four modes and OFF using the top two selections. The bottom one allows you to select the integrated timers 2H, 4H, 8H, and OFF. After the controller has selected the setting, it resets – which means nothing is selected there. The states are displayed below as text sensors. There are also two binary sensors for on and water tank full.
+And then the YAML for ESP Home, and here it is in Home Assistant. You can select one of the four modes and OFF using the top two selections. The one below allows you to select the integrated timers 2H, 4H, 8H, and OFF. After the controller has selected the setting, it resets to "–" which means nothing is selected there. The states are displayed below as text sensors. There are also two binary sensors for on and water tank full.
 
 When you select a mode, the ESP first checks whether the device is on or off and presses the power button if necessary. The ESP32 then presses the mode button repeatedly until the correct mode is selected.
 
