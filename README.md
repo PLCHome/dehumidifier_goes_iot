@@ -1,5 +1,9 @@
 # My dehumidifier becomes an IoT device
 
+** Please note that opening electrical devices is life-threatening! Opening electrical devices and working on them requires training and authorization. **
+** Never work on devices connected to the electrical grid, regardless of whether they are turned on or off. **
+** If you follow or replicate parts of this description, you do so entirely at your own risk. I am not liable for any damage caused. **
+
 ### Introduction
 
 I've had this TROTEC TTK70 device for many years. It helps me keep my basement dry in the summer.
@@ -60,6 +64,8 @@ After inserting the board into the device, the ESP32 rebooted every time I turne
 
 ![board inside](pic/board_inside.jpeg)
 
+## ESPHome and the homeassist
+
 And then the YAML for ESP Home, and here it is in Home Assistant. You can select one of the four modes and OFF using the top two selections. The one below allows you to select the integrated timers 2H, 4H, 8H, and OFF. After the controller has selected the setting, it resets to "–" which means nothing is selected there. The states are displayed below as text sensors. There are also two binary sensors for on and water tank full.
 
 When you select a mode, the ESP first checks whether the device is on or off and presses the power button if necessary. The ESP32 then presses the mode button repeatedly until the correct mode is selected.
@@ -70,6 +76,7 @@ Press a button? Not really, it controls the transistors, but to the microcontrol
 
 ![homeassist](pic/homeassist.PNG)
 
+** Working with electricity is your own responsibility. I am not liable for any damage, including damage to your health. **
 
 Do you have such great projects? Write me...
 

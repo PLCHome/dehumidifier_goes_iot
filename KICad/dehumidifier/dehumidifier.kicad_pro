@@ -489,7 +489,7 @@
       "plot": "export",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "dehumidifier.stl",
+      "step": "export/dehumidifier.stl",
       "svg": "",
       "vrml": ""
     },
