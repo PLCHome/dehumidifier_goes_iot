@@ -64,7 +64,7 @@ A friend was kind enough to mill a circuit board for me on his CNC milling machi
 
 ![pbc build up](pic/pbc_build.jpeg)
 
-After inserting the board into the device, the ESP32 rebooted every time I turned the device on and off. This wasn't good. I then used the other controller from Waveshare. This one also requires a clean head and has a different GPIO order. It works with this one. I also added the capacitor to the board because I was trying to use it to prevent the mini ESP32 from booting. But it seems to be the proximity to the relays and not the supply voltage. The capacitor is 2200uF and is connected to the 5V line to the controller.
+After inserting the board into the device, the ESP32 rebooted every time I turned the device on and off. This wasn't good. I then used the other controller from Waveshare. This one also requires upside-down installation and has a different GPIO order. I adjusted the layout so that it now works with both. I modified the underside of the board. The dead copper surface was quite useful here. It works with this one. I also added the capacitor to the board because I was trying to use it to prevent the mini ESP32 from booting. But it seems to be the proximity to the relays and not the supply voltage. The capacitor is 2200uF and is connected to the 5V line to the controller.
 
 ![board inside](pic/board_inside.jpeg)
 
