@@ -1,8 +1,10 @@
 # My dehumidifier becomes an IoT device
 
-** Please note that opening electrical devices is life-threatening! Opening electrical devices and working on them requires training and authorization. **
-** Never work on devices connected to the electrical grid, regardless of whether they are turned on or off. **
-** If you follow or replicate parts of this description, you do so entirely at your own risk. I am not liable for any damage caused. **
+**Please note that opening electrical devices is life-threatening! Opening electrical devices and working on them requires training and authorization.**
+
+**Never work on devices connected to the electrical grid, regardless of whether they are turned on or off.**
+
+**If you follow or replicate parts of this description, you do so entirely at your own risk. I am not liable for any damage caused, including damage to your health and life.**
 
 ### Introduction
 
@@ -16,6 +18,8 @@ At first, I considered using a timer. But this device only beeps once and then s
 ![type plate](pic/type_plate.jpg)
 
 ## Implementation
+
+**Working with electricity is your own responsibility. I am not liable for any damage, including damage to your health.**
 
 Since the circuit diagram attached to the side was also not informative
 
@@ -76,7 +80,7 @@ Press a button? Not really, it controls the transistors, but to the microcontrol
 
 ![homeassist](pic/homeassist.PNG)
 
-** Working with electricity is your own responsibility. I am not liable for any damage, including damage to your health. **
+**Working with electricity is your own responsibility. I am not liable for any damage, including damage to your health.**
 
 Do you have such great projects? Write me...
 
