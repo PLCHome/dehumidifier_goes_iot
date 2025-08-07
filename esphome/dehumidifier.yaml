@@ -1,0 +1,707 @@
+#   Dehumidifier circuit diagram of the control board
+#
+#   1 2 3 4 5 6 7 8                                          
+#   o o o o o o o o                                          
+#   | | | | | | | |                                          
+#   | | | | | | \-|-----------------------------7-----------\
+#   | | | | | \---|-----------------------------6---------\ |
+#   | | | | \-----|-----------------------------5-------\ | |
+#   | | \-|-------|-----------------------------3-----\ | | |
+#   | |   |       |                                   | | | |
+#   | |   |       8                                   3 5 6 7
+#   | |   |       |                                   | | | |
+#   | |   |       *--Button ON/OFF--o/o---->|---3-----* | | |
+#   | |   |       *--Button Timer---o/o---->|---5-----|-* | |
+#   | |   |       |  Tank sensor on mainboard   6     | | | |
+#   | |   |       \--Button Mode----o/o---->|---7-----|-|-|-*
+#   | |   |                                           | | | |
+#   | |   |                                           | | | |
+#   | |   |                                           | | | |
+#   | |   \--4--=R=---*--LED Auto--------->´|---3-----* | | |
+#   | |               *--LED Condition---->´|---5-----|-* | |
+#   | |    Mode       *--LED Dry clothes-->´|---6-----|-|-* |
+#   | |               \--LED Airclean----->´|---7-----|-|-|-*
+#   | |                                               | | | |
+#   | |                                               | | | |
+#   | |                                               | | | |
+#   | \------2--=R=---*--LED 8H----------->´|---3-----* | | |
+#   |                 *--LED 4H----------->´|---5-----|-* | |
+#   |      Timer      \--LED 2H----------->´|---6-----|-|-* |
+#   |                    not used on board      7     | | | |
+#   |                                                 | | | |
+#   |                                                 3 5 6 7
+#   |                                                 | | | |
+#   \--------1--=R=---*--LED LOW---------->´|---3-----/ | | |
+#                     *--LED MEDIUM------->´|---5-------/ | |
+#          Humidity   *--LED HIGH--------->´|---6---------/ |
+#                     \--LED Tank Full---->´|---7-----------/
+#
+#
+#  Legend
+#      Resistor   --=R=--
+#      Button     --o/o--
+#      Led        -->´|--
+#      Diode      -->|---
+#      Connector  o o o o o o o o
+#                      
+#      intersection without connection  -|-
+#                      
+#                   |            |            |                         |        | 
+#      connection   *---  or  ---*---  or  ---*---  or  ---*---  or  ---*   or   *---
+#                   |                         |            |            |        *---
+#                      
+#                          |            |
+#      change of direction \---  or  ---/  or  /---  or  ---\
+#                                              |            |
+#
+
+substitutions:
+  sub_project_name: "Dehumidifier"
+  sub_area_id: "dehumidifier"
+  sub_area_name: "Dehumidifier"      
+
+  sub_low_humidity: "Low humidity"
+  sub_medium_humidity: "Medium humidity"
+  sub_high_humidity: "High humidity"
+  sub_tank_is_full: "Tank is full"
+  sub_done: "-"
+  sub_off: "Off"
+  sub_2_h: "2 hours"
+  sub_4_h: "4 hours"
+  sub_8_h: "8 hours"
+  sub_auto: "Auto"
+  sub_condition: "Air condition"
+  sub_dry_cloths: "Dry cloths"
+  sub_air_clean: "Air clean"
+
+  sub_button_press: 150ms
+  sub_button_release: 1600ms
+  sub_in_delay: 2ms
+  sub_max_attempt: "16"
+  sub_set_count: "2"
+  sub_off_count: "10"
+
+  sub_name_ap_ssid: "${sub_project_name} Fallback Hotspot"
+ 
+  sub_name_power: "${sub_project_name} Power"
+  sub_name_full: "${sub_project_name} Water level"
+  sub_name_humidity: "${sub_project_name} Humidity"
+  sub_name_mode: "${sub_project_name} Mode"
+  sub_name_timer: "${sub_project_name} Timer"
+  sub_name_ip: "${sub_project_name} IP"
+  sub_name_ssid: "${sub_project_name} SSID"
+  sub_name_mac: "${sub_project_name} MAC"
+  sub_name_version: "${sub_project_name} Version"
+  sub_name_int_temp: "${sub_project_name} Internal Temperature"
+  sub_name_signal: "${sub_project_name} WiFi Signal"
+  sub_name_uptime: "${sub_project_name} Uptime"
+  sub_name_set_timer: "${sub_project_name} Set timer"
+  sub_name_set_mode: "${sub_project_name} Set mode"
+
+  #GPIO03 is a strapping pin, so do not use
+  #Configuration ESP32-S3 Tiny
+  #connection plug pin 1
+  #sub_GPIO_in_humidity: GPIO01
+  #connection plug pin 2
+  #sub_GPIO_in_timer: GPIO02
+  #connection plug pin 3
+  #sub_GPIO_in_M1: GPIO04
+  #connection plug pin 4
+  #sub_GPIO_in_mode: GPIO05
+  #connection plug pin 5
+  #sub_GPIO_in_M2: GPIO06
+  #connection plug pin 6
+  #sub_GPIO_in_M3: GPIO07
+  #connection plug pin 7
+  #sub_GPIO_in_M4: GPIO06
+
+  #connection plug pin 8 pulsed plus für out
+  # out_M1: connection plug pin 3
+  #sub_btn_on: GPIO09
+  # out_M2: connection plug pin 5
+  #sub_btn_timer: GPIO10
+  # out_M4: connection plug pin 7
+  #sub_btn_mode: GPIO11
+  
+
+  #Configuration Waveshare ESP32-S3 Mini
+  #connection plug pin 1
+  sub_GPIO_in_humidity: GPIO13
+  #connection plug pin 2
+  sub_GPIO_in_timer: GPIO12
+  #connection plug pin 3
+  sub_GPIO_in_M1: GPIO10
+  #connection plug pin 4
+  sub_GPIO_in_mode: GPIO09
+  #connection plug pin 5
+  sub_GPIO_in_M2: GPIO08
+  #connection plug pin 6
+  sub_GPIO_in_M3: GPIO07
+  #connection plug pin 7
+  sub_GPIO_in_M4: GPIO06
+  
+
+  #connection plug pin 8 pulsed plus für out
+
+  # out_M1: connection plug pin 3
+  sub_btn_on: GPIO05
+  # out_M2: connection plug pin 5
+  sub_btn_timer: GPIO04
+  # out_M4: connection plug pin 7 (Platine geändert)
+  sub_btn_mode: GPIO02
+
+
+
+
+esphome:
+  project:
+    name: plcHome.dehumidifier
+    version: "1.0.0"
+  area:
+    id: ${sub_area_id}
+    name: "${sub_area_name}"      
+  name: dehumidifier
+  friendly_name: ${sub_project_name}
+  on_boot:
+    - lambda: |-
+        id(dryer_tank_is_full).publish_state(false);
+        id(dryer_power).publish_state(false);
+        id(dryer_timer).publish_state("${sub_off}");
+        id(dryer_humidity).publish_state("${sub_off}");
+        id(set_dryer_timer).publish_state("${sub_done}");
+        id(set_dryer_mode).publish_state("${sub_done}");
+#  on_loop:
+#    then:
+#      lambda: |-
+#       static uint32_t last_state = 0;
+#        auto state = App.get_app_state();
+#        if (state != last_state) {
+#          if (state & STATUS_LED_ERROR) {
+#            auto call = id(led).turn_on();
+#            call.set_effect("ERROR");
+#            call.perform();
+#          } else if (state & STATUS_LED_WARNING) {
+#            auto call = id(led).turn_on();
+#            call.set_effect("BOOT");
+#            call.perform();
+#          } else {
+#            auto call = id(led).turn_off();
+#            call.perform();
+#          }
+#          last_state = state;
+#        }
+
+esp32:
+  board: waveshare_esp32_s3_zero
+  framework:
+    type: esp-idf
+
+logger:
+  #level: WARN
+  level: INFO
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret encryption_key
+    #key: "pZ9J7UhBvsAmo3KsapCJD/rywMogXCbgKQtfzOOaSRY="
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+    #password: "5dcfbade6747edfbe0d3959f9b12b2af"
+#    on_begin:
+#      # Doesn't work as expected, https://github.com/esphome/issues/issues/2967
+#      then:
+#        - light.control:
+#            id: led
+#            state: on
+#            brightness: 100%
+#            red: 100%
+#            green: 0%
+#            blue: 100%
+#    on_error:
+#      then:
+#        - light.control:
+#            id: led
+#            state: on
+#            effect: ERROR
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  output_power: 8.5
+  
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "${sub_name_ap_ssid}"
+    password: !secret ap_password
+    #password: "4U5mK2x23a9s"
+
+web_server:
+  port: 80
+
+captive_portal:
+
+preferences:
+  flash_write_interval: never
+#status_led:
+#  pin:
+#    number: GPIO48
+#    inverted: false
+
+#light:
+#  - platform: status_led
+#    name: "status led"
+#    output: statusoutput
+#  - platform: neopixelbus
+#    variant: WS2812
+#    pin: 7
+#    num_leds: 1
+#    name: "Status LED RGB"
+#    id: statusledlight
+#    icon: "mdi:led-outline"
+
+#light:
+#  - platform: esp32_rmt_led_strip
+#    id: led
+#    #name: "LED"
+#    pin: 21
+#    chipset: WS2812
+#    num_leds: 1
+#    rgb_order: GRB
+#    restore_mode: ALWAYS_OFF
+#    effects:
+#      - lambda:
+#          name: "ERROR"
+#          update_interval: 0.5s
+#          lambda: |-
+#            static bool state = false;
+#            auto call = id(led).turn_on();
+#            call.set_transition_length(500);
+#            call.set_rgb(1, 0, 0);
+#            if (!state) {
+#              call.set_brightness(0.3);
+#            } else {
+#              // If using 0, it freaks Home Assistant UI.
+#              call.set_brightness(0.01);
+#            }
+#            call.perform();
+#            state = !state;
+#      - lambda:
+#          name: "BOOT"
+#          update_interval: 0.5s
+#          lambda: |-
+#            static bool state = false;
+#            auto call = id(led).turn_on();
+#            call.set_transition_length(500);
+#            call.set_rgb(0, 1, 0);
+#            if (!state) {
+#              call.set_brightness(0.3);
+#            } else {
+#              // If using 0, it freaks Home Assistant UI.
+#              call.set_brightness(0.01);
+#            }
+#            call.perform();
+#            state = !state;
+
+globals:
+  - id: timer_attempt
+    type: int
+    initial_value: '0'
+  - id: mode_attempt
+    type: int
+    initial_value: '0'
+
+  - id: mode
+    type: std::string
+    initial_value: '"${sub_off}"'
+  - id: timer
+    type: std::string
+    initial_value: '"${sub_off}"'
+  - id: humidity
+    type: std::string
+    initial_value: '"${sub_off}"'
+
+binary_sensor:
+  - platform: template
+    id: dryer_power
+    device_class: power
+    name: "${sub_name_power}"
+  - platform: template
+    id: dryer_tank_is_full
+    device_class: problem
+    name: "${sub_name_full}"
+  - platform: gpio
+    id: GPIO_in_mode
+    internal: true
+    pin:
+      number: ${sub_GPIO_in_mode}
+      mode:
+        input: true
+        pullup: true
+    interrupt_type: ANY
+
+  - platform: gpio
+    id: GPIO_in_humidity
+    internal: true
+    pin:
+      number: ${sub_GPIO_in_humidity}
+      mode:
+        input: true
+        pullup: true
+    interrupt_type: ANY
+
+  - platform: gpio
+    id: GPIO_in_timer
+    internal: true
+    pin:
+      number: ${sub_GPIO_in_timer}
+      mode:
+        input: true
+        pullup: true
+    interrupt_type: ANY
+
+  - platform: gpio
+    id: GPIO_in_M1
+    internal: true
+    interrupt_type: ANY
+    pin:
+      number: ${sub_GPIO_in_M1}
+      mode:
+        input: true
+        pullup: true
+    on_release:
+      then:
+        - delay: ${sub_in_delay}
+        - lambda: |-
+            if (id(GPIO_in_humidity).state) {
+              id(humidity) = "${sub_low_humidity}";
+            }
+            if (id(GPIO_in_timer).state) {
+              id(timer) = "${sub_8_h}";
+            }
+            if (id(GPIO_in_mode).state) {
+              id(mode) = "${sub_auto}";
+            }
+
+  - platform: gpio
+    id: GPIO_in_M2
+    internal: true
+    interrupt_type: ANY
+    pin:
+      number: ${sub_GPIO_in_M2}
+      mode:
+        input: true
+        pullup: true
+    on_release:
+      then:
+        - delay: ${sub_in_delay}
+        - lambda: |-
+            if (id(GPIO_in_humidity).state) {
+              id(humidity) = "${sub_medium_humidity}";
+            }
+            if (id(GPIO_in_timer).state) {
+              id(timer) = "${sub_4_h}";
+            }
+            if (id(GPIO_in_mode).state) {
+              id(mode) = "${sub_condition}";
+            }
+
+            bool timer_prozess = false;
+            static int timer_off_count = 0;
+            if (id(timer) == "${sub_off}" && timer_off_count < ${sub_off_count}) {
+              timer_off_count++;
+            } else {
+              timer_prozess = true;
+              timer_off_count = 0;
+            }
+            static int timer_set_count = 0;
+            if (timer_prozess && id(timer) != id(dryer_timer).state) {
+              if (timer_set_count>${sub_set_count}) {
+                timer_set_count = 0;
+                id(dryer_timer).publish_state(id(timer));
+              } else {
+                timer_set_count++;
+              }
+            }
+            id(timer) = "${sub_off}";
+
+  - platform: gpio
+    id: GPIO_in_M3
+    internal: true
+    interrupt_type: ANY
+    pin:
+      number: ${sub_GPIO_in_M3}
+      mode:
+        input: true
+        pullup: true
+    on_release:
+      then:
+        - delay: ${sub_in_delay}
+        - lambda: |-
+            if (id(GPIO_in_humidity).state) {
+              id(humidity) = "${sub_high_humidity}";
+            }
+            if (id(GPIO_in_timer).state) {
+              id(timer) = "${sub_2_h}";
+            }
+            if (id(GPIO_in_mode).state) {
+              id(mode) = "${sub_dry_cloths}";
+            }
+
+            bool mode_prozess = false;
+            static int mode_off_count = 0;
+            bool power_off = (id(mode) == "${sub_off}");
+            if (power_off && mode_off_count < ${sub_off_count}) {
+              mode_off_count++;
+            } else {
+              mode_prozess = true;
+              mode_off_count = 0;
+            }
+            static int mode_set_count = 0;
+            if (mode_prozess && id(mode) != id(dryer_mode).state) {
+              if (mode_set_count>${sub_set_count}) {
+                mode_set_count = 0;
+                id(dryer_mode).publish_state(id(mode));
+                if (power_off == id(dryer_power).state) {
+                  id(dryer_power).publish_state(!power_off);
+                }
+              } else {
+                mode_set_count++;
+              }
+            }
+            id(mode) = "${sub_off}";
+
+  - platform: gpio
+    id: GPIO_in_M4
+    internal: true
+    interrupt_type: ANY
+    pin:
+      number: ${sub_GPIO_in_M4}
+      mode:
+        input: true
+        pullup: true
+    on_release:
+      then:
+        - delay: ${sub_in_delay}
+        - lambda: |-
+            if (id(GPIO_in_humidity).state) {
+              id(humidity) = "${sub_tank_is_full}";
+            }
+            if (id(GPIO_in_mode).state) {
+              id(mode) = "${sub_air_clean}";
+            }
+
+
+            bool humidity_prozess = false;
+            static int humidity_off_count = 0;
+            if (id(humidity) == "${sub_off}" && humidity_off_count < ${sub_off_count}) {
+              humidity_off_count++;
+            } else {
+              humidity_prozess = true;
+              humidity_off_count = 0;
+            }
+            static int humidity_set_count = 0;
+            if (humidity_prozess && id(humidity) != id(dryer_humidity).state) {
+              if (humidity_set_count>${sub_set_count}) {
+                humidity_set_count = 0;
+                id(dryer_humidity).publish_state(id(humidity));
+                bool tank_is_full = (id(humidity) == "${sub_tank_is_full}");
+                
+                if (tank_is_full != id(dryer_tank_is_full).state) {
+                  id(dryer_tank_is_full).publish_state(tank_is_full);
+                }
+              } else {
+                humidity_set_count++;
+              }
+            }
+            id(humidity) = "${sub_off}";
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "${sub_name_ip}"
+    ssid:
+      name: "${sub_name_ssid}"
+    mac_address:
+      id: mac_address
+      name: "${sub_name_mac}"
+      entity_category: diagnostic
+  - platform: version
+    name: "${sub_name_version}"
+    hide_timestamp: true
+    disabled_by_default: false
+    icon: mdi:new-box
+    entity_category: diagnostic
+  
+  - platform: template
+    name: "${sub_name_humidity}"
+    id: dryer_humidity
+    icon: "mdi:water"
+  - platform: template
+    name: "${sub_name_mode}"
+    id: dryer_mode
+    icon: "mdi:auto-mode"
+  - platform: template
+    name: "${sub_name_timer}"
+    id: dryer_timer
+    icon: "mdi:timer"
+
+sensor:
+  - platform: internal_temperature
+    name: "${sub_name_int_temp}"
+    entity_category: "diagnostic"
+  - platform: wifi_signal
+    name: "${sub_name_signal}"
+    update_interval: 60s
+    entity_category: "diagnostic"
+  - platform: uptime
+    name: "${sub_name_uptime}"
+    disabled_by_default: false
+    force_update: false
+    unit_of_measurement: s
+    icon: mdi:timer-outline
+    accuracy_decimals: 0
+    device_class: duration
+    state_class: total_increasing
+    entity_category: "diagnostic"
+    update_interval: 60s
+
+
+output:
+  - platform: gpio
+    id: btn_timer
+    pin:
+      number: ${sub_btn_timer}
+      inverted: false
+  - platform: gpio
+    id: btn_mode
+    pin:
+      number: ${sub_btn_mode}
+      inverted: false
+  - platform: gpio
+    id: btn_on
+    pin:
+      number: ${sub_btn_on}
+      inverted: false
+    
+select:
+  - platform: template
+    name: "${sub_name_set_timer}"
+    id: set_dryer_timer
+    icon: "mdi:timer"
+    options:
+      - ${sub_done}
+      - ${sub_off}
+      - ${sub_2_h}
+      - ${sub_4_h}
+      - ${sub_8_h}
+    optimistic: true
+    update_interval: never
+    on_value:
+      then:
+        - lambda: |-
+            if (x != "${sub_done}") {
+              id(timer_attempt) = 0;
+              id(to_timer).execute(x);
+            }
+
+  - platform: template
+    name: "${sub_name_set_mode}"
+    id: set_dryer_mode
+    icon: "mdi:auto-mode"
+    options:
+      - ${sub_done}
+      - ${sub_off}
+      - ${sub_auto}
+      - ${sub_condition}
+      - ${sub_dry_cloths}
+      - ${sub_air_clean}
+    optimistic: true
+    update_interval: never  
+    on_value:
+      then:
+        - lambda: |-
+            if (x != "${sub_done}") {
+              id(mode_attempt) = 0;
+              id(to_mode).execute(x);
+            }
+
+script:
+  - id: to_timer
+    parameters:
+      new_state: std::string
+    mode: restart
+    then:
+      - logger.log:
+          format: "Synchronising dryer timer..."
+          level: info
+      - while:
+          condition:
+            lambda: |-
+                auto current_state = id(dryer_timer).state;
+                auto mode_state = id(dryer_mode).state;
+                return ( (current_state != new_state) && (id(timer_attempt) < ${sub_max_attempt}) && (mode_state != "${sub_off}"));
+          then:
+            - logger.log:
+                format:  "Do Button"    
+                level: info
+            - output.turn_on: btn_timer
+            - delay: ${sub_button_press}
+            - output.turn_off: btn_timer
+            - delay: ${sub_button_release}
+            - lambda: id(timer_attempt) ++;
+      - logger.log:
+          format: "Dryer timer synced or max attempt."    
+          level: info
+      - lambda: id(set_dryer_timer).publish_state("${sub_done}");
+
+  - id: to_mode
+    parameters:
+      new_state: std::string
+    mode: restart
+    then:
+      - logger.log:
+          format: "On/Off ..."
+          level: info
+      - if:
+          condition:
+            lambda: |-
+                auto current_state = id(dryer_mode).state;
+                return ( ((current_state != "${sub_off}") && (new_state == "${sub_off}")) || ((current_state == "${sub_off}") && (new_state != "${sub_off}")));
+          then:                
+            - logger.log:
+                format: "Do Power Button"    
+                level: info
+            - output.turn_on: btn_on
+            - delay: ${sub_button_press}
+            - output.turn_off: btn_on
+            - delay: ${sub_button_release}
+            - logger.log:
+                format: "Power Button done"    
+                level: info
+
+      - logger.log:
+          format: "Synchronising dryer mode..."
+          level: info
+      - while:
+          condition:
+            lambda: |-
+                auto current_state = id(dryer_mode).state;
+                return ( (current_state != new_state) && (id(mode_attempt) < ${sub_max_attempt}) );
+          then:
+            - logger.log:
+                format: "Do Button"    
+                level: info
+            - output.turn_on: btn_mode
+            - delay: ${sub_button_press}
+            - output.turn_off: btn_mode
+            - delay: ${sub_button_release}
+            - lambda: id(mode_attempt) ++;
+      - logger.log:
+          format: "Dryer mode synced or max attempt."    
+          level: info
+      - lambda: id(set_dryer_mode).publish_state("${sub_done}");
+
+    
